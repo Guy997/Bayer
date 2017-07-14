@@ -2,8 +2,8 @@ import time
 import picamera
 import picamera.array
 import numpy as np
-import rawpy
-import imageio
+import numpy
+from PIL import Image
 
 n = 0
 var = 0
@@ -15,12 +15,11 @@ while var == 0:
             try:
                 camera.capture(stream, 'jpeg', bayer=True)
                 time.sleep(1)
-                path = '/media/pi/KINGSTON/Python/'+'%d' % (n),'wb'
-                with open(path) as f:
-                    output.tofile(f)
-                with rawpy.imread(path) as raw:
-                    rgb = raw.postprocess()
-                imageio.imsave('%d' % (n) + '.tiff', rgb)
+                img = np.asarray(stream.array)
+                #print(img)
+                path = "/media/pi/KINGSTON/Python/" + '%d' % (n)
+                img = Image.fromarray(img, 'RGB')
+                img = img.save(path + '.jpeg')
             except IOError as err:
                 print('The Process has Finished.')
                 break
